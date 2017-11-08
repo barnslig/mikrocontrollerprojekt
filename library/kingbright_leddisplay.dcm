@@ -1,0 +1,62 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP CA56-12
+D CA56-12, Quad Led Display 7seg, Common Anode
+K LED 7SEG QUAD MULTIPLEX ANODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/CA56-12EWA.pdf
+$ENDCMP
+#
+$CMP CC56-12
+D CC56-12, Quad Led Display 7seg, Common Cathode
+K LED 7SEG QUAD MULTIPLEX CATHODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/CC56-12EWA.pdf
+$ENDCMP
+#
+$CMP DA56-11
+D DA56-11xxxx, Dual Led Display 7seg, Common Anode
+K LED 7SEG DUAL ANODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/DA56-11EWA.pdf
+$ENDCMP
+#
+$CMP SA03-11
+D SA03-11xxxx, Single Led Display 7seg, Common Anode
+K LED 7SEG SINGLE ANODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/SA03-11EWA.pdf
+$ENDCMP
+#
+$CMP SA04-11
+D SA04-11xxxx, Single Led Display 7seg, Common Anode
+K LED 7SEG SINGLE ANODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/SA04-11EWA.pdf
+$ENDCMP
+#
+$CMP SA15-11
+D SA15-11xxxx, Single Led Display 7seg, Common Anode
+K LED 7SEG SINGLE ANODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/SA15-11EWA.pdf
+$ENDCMP
+#
+$CMP SC03-11
+D SA03-11xxxx, Single Led Display 7seg, Common Cathode
+K LED 7SEG SINGLE CATHODE
+$ENDCMP
+#
+$CMP SC04-11
+D SA04-11xxxx, Single Led Display 7seg, Common Anode
+K LED 7SEG SINGLE ANODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/SC04-11EWA.pdf
+$ENDCMP
+#
+$CMP TA07-11XWA
+D TA07-11xWA, 18mm (0,7") Single Color LED 7x5 Dotmatrix Display, Common Anode
+K LED DOTMATRIX 7x5 ANODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/TA07-11EWA.pdf
+$ENDCMP
+#
+$CMP TC07-11XWA
+D TC07-11xWA, 18mm (0,7") Single Color LED 7x5 Dotmatrix Display, Common Cathode
+K LED DOTMATRIX 7x5 CATHODE
+F http://www.kingbrightusa.com/images/catalog/SPEC/TC07-11EWA.pdf
+$ENDCMP
+#
+#End Doc Library
