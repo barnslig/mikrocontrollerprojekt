@@ -32,7 +32,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:kingbright_leddisplay
-LIBS:mikrocontrollerdings-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -248,41 +247,41 @@ RST
 $Comp
 L TC07-11XWA DS1
 U 1 1 5A00A2DD
-P 2100 5900
-F 0 "DS1" H 1750 6350 40  0000 C CNN
-F 1 "TC07-11HWA" H 2300 6350 40  0000 C CNN
-F 2 "TX07-11XWA" H 2100 6250 30  0000 C CIN
-F 3 "" H 2100 5850 60  0000 C CNN
-	1    2100 5900
+P 2150 6450
+F 0 "DS1" H 1800 6900 40  0000 C CNN
+F 1 "TC07-11HWA" H 2350 6900 40  0000 C CNN
+F 2 "TX07-11XWA" H 2150 6800 30  0000 C CIN
+F 3 "" H 2150 6400 60  0000 C CNN
+	1    2150 6450
 	1    0    0    -1  
 $EndComp
 Text Notes 3100 700  0    60   ~ 0
 Power
 Text Notes 3200 3350 0    60   ~ 0
 ISP
-Text GLabel 1900 6550 3    60   Input ~ 0
+Text GLabel 1950 7100 3    60   Input ~ 0
 C1
-Text GLabel 2000 6800 3    60   Input ~ 0
+Text GLabel 2050 7350 3    60   Input ~ 0
 C2
-Text GLabel 2100 6550 3    60   Input ~ 0
+Text GLabel 2150 7100 3    60   Input ~ 0
 C3
-Text GLabel 2200 6800 3    60   Input ~ 0
+Text GLabel 2250 7350 3    60   Input ~ 0
 C4
-Text GLabel 2300 6550 3    60   Input ~ 0
+Text GLabel 2350 7100 3    60   Input ~ 0
 C5
-Text GLabel 1450 5600 0    60   Input ~ 0
+Text GLabel 1500 6150 0    60   Input ~ 0
 R1
-Text GLabel 1200 5700 0    60   Input ~ 0
+Text GLabel 1250 6250 0    60   Input ~ 0
 R2
-Text GLabel 1450 5800 0    60   Input ~ 0
+Text GLabel 1500 6350 0    60   Input ~ 0
 R3
-Text GLabel 1200 5900 0    60   Input ~ 0
+Text GLabel 1250 6450 0    60   Input ~ 0
 R4
-Text GLabel 1450 6000 0    60   Input ~ 0
+Text GLabel 1500 6550 0    60   Input ~ 0
 R5
-Text GLabel 1200 6100 0    60   Input ~ 0
+Text GLabel 1250 6650 0    60   Input ~ 0
 R6
-Text GLabel 1450 6200 0    60   Input ~ 0
+Text GLabel 1500 6750 0    60   Input ~ 0
 R7
 Connection ~ 2650 1050
 Wire Wire Line
@@ -380,38 +379,38 @@ Wire Notes Line
 Wire Notes Line
 	550  4250 550  3200
 Wire Wire Line
-	1900 6450 1900 6550
+	1950 7000 1950 7100
 Wire Wire Line
-	2000 6450 2000 6800
+	2050 7000 2050 7350
 Wire Wire Line
-	2100 6450 2100 6550
+	2150 7000 2150 7100
 Wire Wire Line
-	2200 6450 2200 6800
+	2250 7000 2250 7350
 Wire Wire Line
-	2300 6450 2300 6550
+	2350 7000 2350 7100
 Wire Wire Line
-	1450 5600 1550 5600
+	1500 6150 1600 6150
 Wire Wire Line
-	1200 5700 1550 5700
+	1250 6250 1600 6250
 Wire Wire Line
-	1450 5800 1550 5800
+	1500 6350 1600 6350
 Wire Wire Line
-	1200 5900 1550 5900
+	1250 6450 1600 6450
 Wire Wire Line
-	1450 6000 1550 6000
+	1500 6550 1600 6550
 Wire Wire Line
-	1200 6100 1550 6100
+	1250 6650 1600 6650
 Wire Wire Line
-	1450 6200 1550 6200
+	1500 6750 1600 6750
 Wire Notes Line
-	550  5300 3400 5300
+	600  5850 3450 5850
 Wire Notes Line
-	3400 5300 3400 7100
+	3450 5850 3450 7650
 Wire Notes Line
-	3400 7100 550  7100
+	3450 7650 600  7650
 Wire Notes Line
-	550  7100 550  5300
-Text Notes 3000 5450 0    60   ~ 0
+	600  7650 600  5850
+Text Notes 3050 6000 0    60   ~ 0
 Display
 Text GLabel 8500 3600 2    60   Input ~ 0
 C1
@@ -487,61 +486,97 @@ Text GLabel 2250 3600 2    60   Input ~ 0
 +5V
 Wire Wire Line
 	1900 3600 2250 3600
-$Comp
-L SW_Push_SPDT SW1
-U 1 1 5A00F5F4
-P 1850 4700
-F 0 "SW1" H 1850 4870 50  0000 C CNN
-F 1 "SW_Push_SPDT" H 1850 4500 50  0000 C CNN
-F 2 "" H 1850 4700 50  0001 C CNN
-F 3 "" H 1850 4700 50  0001 C CNN
-	1    1850 4700
-	-1   0    0    -1  
-$EndComp
-Text GLabel 2200 4700 2    60   Input ~ 0
+Text GLabel 1850 4650 1    60   Input ~ 0
 RST
 $Comp
 L GND #PWR4
 U 1 1 5A00F861
-P 1400 4900
-F 0 "#PWR4" H 1400 4650 50  0001 C CNN
-F 1 "GND" H 1400 4750 50  0000 C CNN
-F 2 "" H 1400 4900 50  0001 C CNN
-F 3 "" H 1400 4900 50  0001 C CNN
-	1    1400 4900
-	1    0    0    -1  
+P 2750 4900
+F 0 "#PWR4" H 2750 4650 50  0001 C CNN
+F 1 "GND" H 2750 4750 50  0000 C CNN
+F 2 "" H 2750 4900 50  0001 C CNN
+F 3 "" H 2750 4900 50  0001 C CNN
+	1    2750 4900
+	0    -1   -1   0   
 $EndComp
 $Comp
 L R R1
 U 1 1 5A00F88B
-P 1400 4600
-F 0 "R1" V 1480 4600 50  0000 C CNN
-F 1 "10k" V 1400 4600 50  0000 C CNN
-F 2 "" V 1330 4600 50  0001 C CNN
-F 3 "" H 1400 4600 50  0001 C CNN
-	1    1400 4600
-	0    1    1    0   
+P 1500 4900
+F 0 "R1" V 1580 4900 50  0000 C CNN
+F 1 "10k" V 1500 4900 50  0000 C CNN
+F 2 "" V 1430 4900 50  0001 C CNN
+F 3 "" H 1500 4900 50  0001 C CNN
+	1    1500 4900
+	0    -1   -1   0   
 $EndComp
-Text GLabel 1100 4600 0    60   Input ~ 0
+Text GLabel 1000 4900 0    60   Input ~ 0
 +5V
 Wire Wire Line
-	2050 4700 2200 4700
-Wire Wire Line
-	1550 4600 1650 4600
-Wire Wire Line
-	1400 4900 1400 4800
-Wire Wire Line
-	1400 4800 1650 4800
-Wire Wire Line
-	1100 4600 1250 4600
+	1000 4900 1350 4900
 Wire Notes Line
-	550  4300 3400 4300
+	550  4300 3450 4300
 Wire Notes Line
-	3400 4300 3400 5250
+	3450 4800 3450 5750
 Wire Notes Line
-	3400 5250 550  5250
+	3450 5750 600  5750
 Wire Notes Line
-	550  5250 550  4300
+	600  5750 600  4300
 Text Notes 3300 4450 2    60   ~ 0
 Reset button / pull-up
+Wire Wire Line
+	1650 4900 2200 4900
+Wire Wire Line
+	1850 5600 1850 4650
+$Comp
+L SW_Push SW?
+U 1 1 5A0476B4
+P 2400 4900
+F 0 "SW?" H 2450 5000 50  0000 L CNN
+F 1 "SW_Push" H 2400 4840 50  0000 C CNN
+F 2 "" H 2400 5100 50  0001 C CNN
+F 3 "" H 2400 5100 50  0001 C CNN
+	1    2400 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C?
+U 1 1 5A0476FF
+P 2350 5600
+F 0 "C?" H 2375 5700 50  0000 L CNN
+F 1 "100 nF" H 2375 5500 50  0000 L CNN
+F 2 "" H 2388 5450 50  0001 C CNN
+F 3 "" H 2350 5600 50  0001 C CNN
+	1    2350 5600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L D D?
+U 1 1 5A047758
+P 1500 5600
+F 0 "D?" H 1500 5700 50  0000 C CNN
+F 1 "D1 1N4148" H 1500 5500 50  0000 C CNN
+F 2 "" H 1500 5600 50  0001 C CNN
+F 3 "" H 1500 5600 50  0001 C CNN
+	1    1500 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 5600 1100 5600
+Wire Wire Line
+	1100 5600 1100 4900
+Connection ~ 1100 4900
+Wire Wire Line
+	1650 5600 2200 5600
+Wire Wire Line
+	2750 4900 2600 4900
+Connection ~ 1850 4900
+Connection ~ 1850 5600
+Wire Wire Line
+	2500 5600 2700 5600
+Wire Wire Line
+	2700 5600 2700 4900
+Connection ~ 2700 4900
+Wire Notes Line
+	3450 4300 3450 4850
 $EndSCHEMATC
