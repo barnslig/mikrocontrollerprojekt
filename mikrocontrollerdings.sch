@@ -391,7 +391,7 @@ $EndComp
 Text GLabel 4100 2650 0    60   Input ~ 0
 +5V
 Text GLabel 4700 2500 1    60   Input ~ 0
-PD4
+PC0
 Text GLabel 9650 4750 2    60   Input ~ 0
 PD6
 $Comp
@@ -467,7 +467,7 @@ $EndComp
 Text GLabel 4100 3950 0    60   Input ~ 0
 +5V
 Text GLabel 4700 3800 1    60   Input ~ 0
-PD5
+PD7
 Text Notes 5950 3350 2    60   ~ 0
 Decrement button
 $Comp
@@ -517,7 +517,7 @@ F 3 "" H 8850 7650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 8050 7200 0    60   Input ~ 0
-PC2
+PA2
 Text GLabel 8850 7900 3    60   Input ~ 0
 R3
 Text GLabel 10850 6900 1    60   Input ~ 0
@@ -534,7 +534,7 @@ F 3 "" H 10850 7650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 10050 7200 0    60   Input ~ 0
-PC3
+PA3
 Text GLabel 10850 7900 3    60   Input ~ 0
 R4
 Text GLabel 5050 6900 1    60   Input ~ 0
@@ -551,7 +551,7 @@ F 3 "" H 5050 7650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 4250 7200 0    60   Input ~ 0
-PC0
+PA0
 Text GLabel 5050 7900 3    60   Input ~ 0
 R1
 Text GLabel 6900 6900 1    60   Input ~ 0
@@ -568,7 +568,7 @@ F 3 "" H 6900 7650 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 6100 7200 0    60   Input ~ 0
-PC1
+PA1
 Text GLabel 6900 7900 3    60   Input ~ 0
 R2
 Text GLabel 6900 8650 1    60   Input ~ 0
@@ -585,7 +585,7 @@ F 3 "" H 6900 9400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 6100 8950 0    60   Input ~ 0
-PC5
+PA5
 Text GLabel 6900 9650 3    60   Input ~ 0
 R6
 Text GLabel 8850 8650 1    60   Input ~ 0
@@ -602,7 +602,7 @@ F 3 "" H 8850 9400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 8050 8950 0    60   Input ~ 0
-PC6
+PA6
 Text GLabel 8850 9650 3    60   Input ~ 0
 R7
 Text GLabel 5050 8650 1    60   Input ~ 0
@@ -619,7 +619,7 @@ F 3 "" H 5050 9400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text GLabel 4250 8950 0    60   Input ~ 0
-PC4
+PA4
 Text GLabel 5050 9650 3    60   Input ~ 0
 R5
 Text GLabel 1450 7800 0    60   Input ~ 0
@@ -637,15 +637,15 @@ R6
 Text GLabel 1450 8400 0    60   Input ~ 0
 R7
 Text GLabel 1850 10250 3    60   Input ~ 0
-PD2
+PC5
 Text GLabel 1950 10850 3    60   Input ~ 0
-PD3
+PC4
 Text GLabel 2050 10250 3    60   Input ~ 0
-PD4
+PC3
 Text GLabel 2150 10850 3    60   Input ~ 0
-PD5
+PC2
 Text GLabel 2250 10250 3    60   Input ~ 0
-PD6
+PC1
 $Comp
 L R R4
 U 1 1 5A09C1D2
@@ -778,45 +778,45 @@ PB1
 Text GLabel 9600 2550 2    60   Input ~ 0
 PB2
 Text GLabel 9600 2750 2    60   Input ~ 0
-PB3
-Text GLabel 9950 2650 2    60   Input ~ 0
 PB4
+Text GLabel 9950 2650 2    60   Input ~ 0
+PB3
 Text GLabel 10000 3950 2    60   Input ~ 0
 PC7
 Text GLabel 10000 4850 2    60   Input ~ 0
 PD7
 Text GLabel 1450 6150 0    60   Input ~ 0
-PA0
-Text GLabel 1150 6250 0    60   Input ~ 0
-PA1
-Text GLabel 1450 6350 0    60   Input ~ 0
-PA2
-Text GLabel 1150 6450 0    60   Input ~ 0
-PA3
-Text GLabel 1450 6550 0    60   Input ~ 0
-PA4
-Text GLabel 1150 6650 0    60   Input ~ 0
-PA5
-Text GLabel 1450 6750 0    60   Input ~ 0
-PA6
-Text GLabel 2150 6150 2    60   Input ~ 0
-PA7
-Text GLabel 2450 6250 2    60   Input ~ 0
-PB0
-Text GLabel 2150 6350 2    60   Input ~ 0
-PB1
-Text GLabel 2450 6450 2    60   Input ~ 0
-PB2
-Text GLabel 2150 6550 2    60   Input ~ 0
-PB3
-Text GLabel 2450 6650 2    60   Input ~ 0
-PB4
-Text GLabel 2150 6750 2    60   Input ~ 0
-PC7
-Text GLabel 2450 6850 2    60   Input ~ 0
-PD7
-Text GLabel 1150 6850 0    60   Input ~ 0
 +5V
+Text GLabel 1150 6250 0    60   Input ~ 0
++5V
+Text GLabel 1450 6350 0    60   Input ~ 0
++5V
+Text GLabel 1150 6450 0    60   Input ~ 0
+PD2
+Text GLabel 1450 6550 0    60   Input ~ 0
+PD3
+Text GLabel 1150 6650 0    60   Input ~ 0
+PD4
+Text GLabel 1450 6750 0    60   Input ~ 0
+PD5
+Text GLabel 2150 6150 2    60   Input ~ 0
+PB0
+Text GLabel 2450 6250 2    60   Input ~ 0
+PB1
+Text GLabel 2150 6350 2    60   Input ~ 0
+PB2
+Text GLabel 2450 6450 2    60   Input ~ 0
+PB3
+Text GLabel 2150 6550 2    60   Input ~ 0
+PB4
+Text GLabel 2450 6650 2    60   Input ~ 0
++5V
+Text GLabel 2150 6750 2    60   Input ~ 0
++5V
+Text GLabel 2450 6850 2    60   Input ~ 0
++5V
+Text GLabel 1150 6850 0    60   Input ~ 0
+PD6
 $Comp
 L GND #PWR015
 U 1 1 5A0B383F
