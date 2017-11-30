@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/leonard/uni/mikrocontrollerdings/mikrocontrollerdings.sch)
-    (date "Do 23 Nov 2017 18:51:27 CET")
+    (date "Do 30 Nov 2017 14:23:35 CET")
     (tool "Eeschema 4.0.7")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -136,7 +136,7 @@
       (sheetpath (names /) (tstamps /))
       (tstamp 5A057C8D))
     (comp (ref DS1)
-      (value TA07-11XWA)
+      (value TC07-11XWA)
       (footprint Housings_DIP:DIP-12_W7.62mm_Socket_LongPads)
       (libsource (lib kingbright_leddisplay) (part TA07-11XWA))
       (sheetpath (names /) (tstamps /))
