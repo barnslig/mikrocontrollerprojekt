@@ -3,10 +3,12 @@
 ; gavrasm main.asm
 ; avrdude -p m16 -c usbasp -U main.hex
 
-; TODO
-; - serial connection
-
 .equ DEBOUNCE_COUNT = 20
+
+; uart configuration. see datasheet page 147
+.equ F_CPU = 4000000
+.equ BAUD  = 9600
+.equ MYUBRR = F_CPU/16/BAUD-1
 
 .org 0x00
 	rjmp main
@@ -22,6 +24,43 @@
 
 .org OVF0addr
 	rjmp update_display
+
+.org URXCaddr
+	rjmp receive_value
+
+patterns:
+	; 0
+	.db 0b00011100, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00011100, 0
+	; 1
+	.db 0b00000110, 0b00011010, 0b00110010, 0b00000010, 0b00000010, 0b00000010, 0b00000010, 0
+	; 2
+	.db 0b00011100, 0b00100010, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00111110, 0
+	; 3
+	.db 0b00111110, 0b00000010, 0b00000010, 0b00111110, 0b00000010, 0b00000010, 0b00111110, 0
+	; 4
+	.db 0b00100010, 0b00100010, 0b00100010, 0b00111110, 0b00000010, 0b00000010, 0b00000010, 0
+	; 5
+	.db 0b00111110, 0b00100000, 0b00100000, 0b00111100, 0b00000010, 0b00000010, 0b00111100, 0
+	; 6
+	.db 0b00011110, 0b00100000, 0b00100000, 0b00111100, 0b00100010, 0b00100010, 0b00011100, 0
+	; 7
+	.db 0b00111110, 0b00000010, 0b00000100, 0b00011100, 0b00010000, 0b00100000, 0b00100000, 0
+	; 8
+	.db 0b00011100, 0b00100010, 0b00100010, 0b00011100, 0b00100010, 0b00100010, 0b00011100, 0
+	; 9
+	.db 0b00011100, 0b00100010, 0b00100010, 0b00011110, 0b00000010, 0b00000010, 0b00111100, 0
+	; A
+	.db 0b00011100, 0b00100010, 0b00100010, 0b00111110, 0b00100010, 0b00100010, 0b00100010, 0
+	; B
+	.db 0b00111100, 0b00100010, 0b00100010, 0b00111100, 0b00100010, 0b00100010, 0b00111100, 0
+	; C
+	.db 0b00011110, 0b00100000, 0b00100000, 0b00100000, 0b00100000, 0b00100000, 0b00011110, 0
+	; D
+	.db 0b00111100, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00111100, 0
+	; E
+	.db 0b00111110, 0b00100000, 0b00100000, 0b00111110, 0b00100000, 0b00100000, 0b00111110, 0
+	; F
+	.db 0b00111110, 0b00100000, 0b00100000, 0b00111110, 0b00100000, 0b00100000, 0b00100000, 0
 
 main:
 	; enable stack pointer
@@ -60,6 +99,23 @@ main:
 	ldi r16, (1 << INT0) | (1 << INT1)
 	out GICR, r16
 
+	; set uart baudrate
+	ldi r16, HIGH(MYUBRR)
+	out UBRRH, r16
+	ldi r16, LOW(MYUBRR)
+	out UBRRL, r16
+
+	; set uart frame format: 8data, 2stop bit
+	ldi r16, (1 << URSEL) | (1 << USBS) | (3 << UCSZ0)
+	out UCSRC, r16
+
+	; enable uart receive and transmit
+	ldi r16, (1 << RXEN) | (1 << TXEN)
+	out UCSRB, r16
+
+	; enable uart receive interrupt
+	sbi UCSRB, RXCIE
+
 	; pattern buffer (port order is a bit messed up ;-)))
 	ldi r20, 0b00100000
 	ldi r26, 0b00010000
@@ -87,12 +143,83 @@ main:
 loop:
 	rjmp loop
 
+do_nothing:
+	reti
+
+display_input_number:
+	rcall transmit_input_number
+
+	; calculate pattern address
+	ldi ZH, HIGH(patterns*2)
+	ldi ZL, LOW(patterns*2)
+
+	ldi r16, 8
+	mul r16, r29
+	add ZL, r0
+
+	lpm r20, Z+
+	lpm r26, Z+
+	lpm r25, Z+
+	lpm r24, Z+
+	lpm r23, Z+
+	lpm r22, Z+
+	lpm r21, Z+
+
+	ret
+
+;;;;;;;;;;;;;;;;
+; UART HANDLER ;
+;;;;;;;;;;;;;;;;
+
+transmit_input_number:
+	cpi r29, 10
+	brge transmit_input_character
+
+	ldi r16, 48
+	add r16, r29
+	out UDR, r16
+
+	ret
+
+transmit_input_character:
+	ldi r16, 55
+	add r16, r29
+	out UDR, r16
+
+	ret
+
+receive_value:
+	in r16, UDR
+
+	; ASCII 48-57: 0-9
+	; ASCII 65-70: A-F
+	cpi r16, 48
+	brlt do_nothing
+	cpi r16, 71
+	brge do_nothing
+	cpi r16, 58
+	brlt receive_value_number
+	cpi r16, 65
+	brlt do_nothing
+
+	subi r16, 55
+	mov r29, r16
+
+	rcall display_input_number
+
+	reti
+
+receive_value_number:
+	subi r16, 48
+	mov r29, r16
+
+	rcall display_input_number
+
+	reti
+
 ;;;;;;;;;;;;;;;;;;
 ; BUTTON HANDLER ;
 ;;;;;;;;;;;;;;;;;;
-
-do_nothing:
-	reti
 
 update_button_debounce:
 	cpi r17, 0
@@ -116,7 +243,9 @@ up_button:
 	; set button debounce counter
 	ldi r17, DEBOUNCE_COUNT
 
-	rjmp display_input_number
+	rcall display_input_number
+
+	reti
 
 down_button:
 	; do nothing if button debounce counter is not zero
@@ -133,58 +262,7 @@ down_button:
 	; set button debounce counter
 	ldi r17, DEBOUNCE_COUNT
 
-	rjmp display_input_number
-
-patterns:
-	; 0
-	.db 0b00011100, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00011100, 0
-	; 1
-	.db 0b00000110, 0b00011010, 0b00110010, 0b00000010, 0b00000010, 0b00000010, 0b00000010, 0
-	; 2
-	.db 0b00011100, 0b00100010, 0b00000010, 0b00000100, 0b00001000, 0b00010000, 0b00111110, 0
-	; 3
-	.db 0b00111110, 0b00000010, 0b00000010, 0b00111110, 0b00000010, 0b00000010, 0b00111110, 0
-	; 4
-	.db 0b00100010, 0b00100010, 0b00100010, 0b00111110, 0b00000010, 0b00000010, 0b00000010, 0
-	; 5
-	.db 0b00111110, 0b00100000, 0b00100000, 0b00111100, 0b00000010, 0b00000010, 0b00111100, 0
-	; 6
-	.db 0b00011110, 0b00100000, 0b00100000, 0b00111100, 0b00100010, 0b00100010, 0b00011100, 0
-	; 7
-	.db 0b00111110, 0b00000010, 0b00000100, 0b00011100, 0b00010000, 0b00100000, 0b00100000, 0
-	; 8
-	.db 0b00011100, 0b00100010, 0b00100010, 0b00011100, 0b00100010, 0b00100010, 0b00011100, 0
-	; 9
-	.db 0b00011100, 0b00100010, 0b00100010, 0b00011110, 0b00000010, 0b00000010, 0b00111100, 0
-	; A
-	.db 0b00011100, 0b00100010, 0b00100010, 0b00111110, 0b00100010, 0b00100010, 0b00100010, 0
-	; B
-	.db 0b00111100, 0b00100010, 0b00100010, 0b00111100, 0b00100010, 0b00100010, 0b00111100, 0
-	; C
-	.db 0b00011110, 0b00100000, 0b00100000, 0b00100000, 0b00100000, 0b00100000, 0b00011110, 0
-	; D
-	.db 0b00111100, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00100010, 0b00111100, 0
-	; E
-	.db 0b00111110, 0b00100000, 0b00100000, 0b00111110, 0b00100000, 0b00100000, 0b00111110, 0
-	; F
-	.db 0b00111110, 0b00100000, 0b00100000, 0b00111110, 0b00100000, 0b00100000, 0b00100000, 0
-
-display_input_number:
-	; calculate pattern address
-	ldi ZH, HIGH(patterns*2)
-	ldi ZL, LOW(patterns*2)
-
-	ldi r16, 8
-	mul r16, r29
-	add ZL, r0
-
-	lpm r20, Z+
-	lpm r26, Z+
-	lpm r25, Z+
-	lpm r24, Z+
-	lpm r23, Z+
-	lpm r22, Z+
-	lpm r21, Z+
+	rcall display_input_number
 
 	reti
 
