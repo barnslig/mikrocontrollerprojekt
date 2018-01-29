@@ -1,7 +1,12 @@
 .include "m16Adef.inc"
 
-; gavrasm foo.asm
-; avrdude -p m16 -c usbasp -U foo.hex
+; gavrasm main.asm
+; avrdude -p m16 -c usbasp -U main.hex
+
+; TODO
+; - serial connection
+
+.equ DEBOUNCE_COUNT = 20
 
 .org 0x00
 	rjmp main
@@ -11,6 +16,9 @@
 
 .org INT1addr
 	rjmp down_button
+
+.org OVF2addr
+	rjmp update_button_debounce
 
 .org OVF0addr
 	rjmp update_display
@@ -30,15 +38,21 @@ main:
 	ldi r16, 0b00111110
 	out DDRC, r16
 
-	; create 8 bit timer counter for the display. prescaler is clock/8 --> 1MHz
+	; create 8 bit timer counter for button debouncing. prescaler is clock/1024 --> ~4kHz
+	ldi r16, (1 << CS20) | (1 << CS22)
+	out TCCR2, r16
+
+	; create 8 bit timer counter for the display. prescaler is clock/8 --> 500kHz
 	ldi r16, (1 << CS01)
 	out TCCR0, r16
 
-	; enable an interrupt when the timer counter overflows --> interrupt triggers every 1MHz/256 --> ~4kHz
-	ldi r16, (1 << TOIE0)
+	; enable interrupts when the timer counters overflow
+	; display interval: 500kHz/256 --> ~2kHz --> 200ms
+	; button debouncer interval: 4kHz/256 --> ~15Hz --> 66ms
+	ldi r16, (1 << TOIE0) | (1 << TOIE2)
 	out TIMSK, r16
 
-	; INT0 und INT1 auf fallende Flanke konfigurieren
+	; INT0 und INT1 auf steigende Flanke konfigurieren
 	ldi r16, (1 << ISC01) | (1 << ISC11)
 	out MCUCR, r16
 
@@ -64,6 +78,9 @@ main:
 	; current input number
 	ldi r29, 0
 
+	; button debounce counter
+	ldi r17, 0
+
 	; enable interrupts
 	sei
 
@@ -74,7 +91,21 @@ loop:
 ; BUTTON HANDLER ;
 ;;;;;;;;;;;;;;;;;;
 
+do_nothing:
+	reti
+
+update_button_debounce:
+	cpi r17, 0
+	breq do_nothing
+
+	dec r17
+	reti
+
 up_button:
+	; do nothing if button debounce counter is not zero
+	cpi r17, 0
+	brne do_nothing
+
 	; do nothing if upper bound is reached
 	cpi r29, 15
 	brge do_nothing
@@ -82,9 +113,16 @@ up_button:
 	; increment input number
 	inc r29
 
+	; set button debounce counter
+	ldi r17, DEBOUNCE_COUNT
+
 	rjmp display_input_number
 
 down_button:
+	; do nothing if button debounce counter is not zero
+	cpi r17, 0
+	brne do_nothing
+
 	; do nothing if lower bound is reached
 	cpi r29, 0
 	breq do_nothing
@@ -92,10 +130,10 @@ down_button:
 	; decrement input number
 	dec r29
 
-	rjmp display_input_number
+	; set button debounce counter
+	ldi r17, DEBOUNCE_COUNT
 
-do_nothing:
-	reti
+	rjmp display_input_number
 
 patterns:
 	; 0
