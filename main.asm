@@ -10,6 +10,13 @@
 .equ BAUD  = 9600
 .equ MYUBRR = F_CPU/16/BAUD-1
 
+; register names
+.def temp = r16
+.def btn_debounce_counter = r17
+.def current_row = r27
+.def current_row_bit = r28
+.def current_number = r29
+
 .org 0x00
 	rjmp main
 
@@ -64,54 +71,54 @@ patterns:
 
 main:
 	; enable stack pointer
-	ldi r16, high(RAMEND)
-	out SPH, r16
-	ldi r16, low(RAMEND)
-	out SPL, r16
+	ldi temp, high(RAMEND)
+	out SPH, temp
+	ldi temp, low(RAMEND)
+	out SPL, temp
 
 	; PA0-PA6: rows
-	ldi r16, 0b01111111
-	out DDRA, r16
+	ldi temp, 0b01111111
+	out DDRA, temp
 
 	; PC1-PC5: cols
-	ldi r16, 0b00111110
-	out DDRC, r16
+	ldi temp, 0b00111110
+	out DDRC, temp
 
 	; create 8 bit timer counter for button debouncing. prescaler is clock/1024 --> ~4kHz
-	ldi r16, (1 << CS20) | (1 << CS22)
-	out TCCR2, r16
+	ldi temp, (1 << CS20) | (1 << CS22)
+	out TCCR2, temp
 
 	; create 8 bit timer counter for the display. prescaler is clock/8 --> 500kHz
-	ldi r16, (1 << CS01)
-	out TCCR0, r16
+	ldi temp, (1 << CS01)
+	out TCCR0, temp
 
 	; enable interrupts when the timer counters overflow
 	; display interval: 500kHz/256 --> ~2kHz --> 200ms
 	; button debouncer interval: 4kHz/256 --> ~15Hz --> 66ms
-	ldi r16, (1 << TOIE0) | (1 << TOIE2)
-	out TIMSK, r16
+	ldi temp, (1 << TOIE0) | (1 << TOIE2)
+	out TIMSK, temp
 
 	; INT0 und INT1 auf steigende Flanke konfigurieren
-	ldi r16, (1 << ISC01) | (1 << ISC11)
-	out MCUCR, r16
+	ldi temp, (1 << ISC01) | (1 << ISC11)
+	out MCUCR, temp
 
 	; INT0 und INT1 aktivieren
-	ldi r16, (1 << INT0) | (1 << INT1)
-	out GICR, r16
+	ldi temp, (1 << INT0) | (1 << INT1)
+	out GICR, temp
 
 	; set uart baudrate
-	ldi r16, HIGH(MYUBRR)
-	out UBRRH, r16
-	ldi r16, LOW(MYUBRR)
-	out UBRRL, r16
+	ldi temp, HIGH(MYUBRR)
+	out UBRRH, temp
+	ldi temp, LOW(MYUBRR)
+	out UBRRL, temp
 
 	; set uart frame format: 8data, 2stop bit
-	ldi r16, (1 << URSEL) | (1 << USBS) | (3 << UCSZ0)
-	out UCSRC, r16
+	ldi temp, (1 << URSEL) | (1 << USBS) | (3 << UCSZ0)
+	out UCSRC, temp
 
 	; enable uart receive and transmit
-	ldi r16, (1 << RXEN) | (1 << TXEN)
-	out UCSRB, r16
+	ldi temp, (1 << RXEN) | (1 << TXEN)
+	out UCSRB, temp
 
 	; enable uart receive interrupt
 	sbi UCSRB, RXCIE
@@ -126,16 +133,16 @@ main:
 	ldi r21, 0b00001100
 
 	; current row number
-	ldi r27, 0
+	ldi current_row, 0
 
 	; current row bits
-	ldi r28, 0b10000000
+	ldi current_row_bit, 0b10000000
 
 	; current input number
-	ldi r29, 0
+	ldi current_number, 0
 
 	; button debounce counter
-	ldi r17, 0
+	ldi btn_debounce_counter, 0
 
 	; enable interrupts
 	sei
@@ -153,8 +160,8 @@ display_input_number:
 	ldi ZH, HIGH(patterns*2)
 	ldi ZL, LOW(patterns*2)
 
-	ldi r16, 8
-	mul r16, r29
+	ldi temp, 8
+	mul temp, current_number
 	add ZL, r0
 
 	lpm r20, Z+
@@ -172,46 +179,46 @@ display_input_number:
 ;;;;;;;;;;;;;;;;
 
 transmit_input_number:
-	cpi r29, 10
+	cpi current_number, 10
 	brge transmit_input_character
 
-	ldi r16, 48
-	add r16, r29
-	out UDR, r16
+	ldi temp, 48
+	add temp, current_number
+	out UDR, temp
 
 	ret
 
 transmit_input_character:
-	ldi r16, 55
-	add r16, r29
-	out UDR, r16
+	ldi temp, 55
+	add temp, current_number
+	out UDR, temp
 
 	ret
 
 receive_value:
-	in r16, UDR
+	in temp, UDR
 
 	; ASCII 48-57: 0-9
 	; ASCII 65-70: A-F
-	cpi r16, 48
+	cpi temp, 48
 	brlt do_nothing
-	cpi r16, 71
+	cpi temp, 71
 	brge do_nothing
-	cpi r16, 58
+	cpi temp, 58
 	brlt receive_value_number
-	cpi r16, 65
+	cpi temp, 65
 	brlt do_nothing
 
-	subi r16, 55
-	mov r29, r16
+	subi temp, 55
+	mov current_number, temp
 
 	rcall display_input_number
 
 	reti
 
 receive_value_number:
-	subi r16, 48
-	mov r29, r16
+	subi temp, 48
+	mov current_number, temp
 
 	rcall display_input_number
 
@@ -222,26 +229,26 @@ receive_value_number:
 ;;;;;;;;;;;;;;;;;;
 
 update_button_debounce:
-	cpi r17, 0
+	cpi btn_debounce_counter, 0
 	breq do_nothing
 
-	dec r17
+	dec btn_debounce_counter
 	reti
 
 up_button:
 	; do nothing if button debounce counter is not zero
-	cpi r17, 0
+	cpi btn_debounce_counter, 0
 	brne do_nothing
 
 	; do nothing if upper bound is reached
-	cpi r29, 15
+	cpi current_number, 15
 	brge do_nothing
 
 	; increment input number
-	inc r29
+	inc current_number
 
 	; set button debounce counter
-	ldi r17, DEBOUNCE_COUNT
+	ldi btn_debounce_counter, DEBOUNCE_COUNT
 
 	rcall display_input_number
 
@@ -249,18 +256,18 @@ up_button:
 
 down_button:
 	; do nothing if button debounce counter is not zero
-	cpi r17, 0
+	cpi btn_debounce_counter, 0
 	brne do_nothing
 
 	; do nothing if lower bound is reached
-	cpi r29, 0
+	cpi current_number, 0
 	breq do_nothing
 
 	; decrement input number
-	dec r29
+	dec current_number
 
 	; set button debounce counter
-	ldi r17, DEBOUNCE_COUNT
+	ldi btn_debounce_counter, DEBOUNCE_COUNT
 
 	rcall display_input_number
 
@@ -272,23 +279,23 @@ down_button:
 
 update_display:
 	; turn off row that we want to enable
-	mov r16, r28
-	com r16
-	out PORTA, r16
+	mov temp, current_row_bit
+	com temp
+	out PORTA, temp
 
-	cpi r27, 0
+	cpi current_row, 0
 	breq row_0
-	cpi r27, 1
+	cpi current_row, 1
 	breq row_1
-	cpi r27, 2
+	cpi current_row, 2
 	breq row_2
-	cpi r27, 3
+	cpi current_row, 3
 	breq row_3
-	cpi r27, 4
+	cpi current_row, 4
 	breq row_4
-	cpi r27, 5
+	cpi current_row, 5
 	breq row_5
-	cpi r27, 6
+	cpi current_row, 6
 	breq row_6
 
 row_0:
@@ -315,17 +322,17 @@ row_6:
 
 continue_update_display:
 	; increment current row when it is less than 7
-	cpi r27, 7
+	cpi current_row, 7
 	brlt next_row
 
 	; reset
-	ldi r27, 0
-	ldi r28, 0b10000000
+	ldi current_row, 0
+	ldi current_row_bit, 0b10000000
 
 	reti
 
 next_row:
-	inc r27
-	lsr r28
+	inc current_row
+	lsr current_row_bit
 
 	reti
